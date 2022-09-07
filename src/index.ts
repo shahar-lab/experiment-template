@@ -1,11 +1,9 @@
-import {initJsPsych} from 'jspsych';
 import 'jspsych/css/jspsych.css'
-import htmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import practice from './practice';
 import test from './test';
+import jsPsych from './initJsPsych';
 
-const jsPsych = initJsPsych();
-console.debug('jsPsych initialized: ', jsPsych);
+
 
 // The timeline is an array that contains the set of trials we want to run in the experiment.
 const timeline = [];

@@ -1,17 +1,19 @@
-import {initJsPsych} from 'jspsych';
-
 import 'jspsych/css/jspsych.css'
 import htmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
+
+import jsPsych from './initJsPsych';
+
+import {fixation_cards, exp_cards, exp_choice, exp_delay, exp_reward} from './procedure';
 
 
 let block = 0;
 const blocks = 1; // 2 blocks
 
-const set1 = ['images/flowersSet1/1.png', 'images/flowersSet1/2.png', 'images/flowersSet1/3.png', 'images/flowersSet1/4.png']
-const set2 = ['images/flowersSet2/1.png', 'images/flowersSet2/2.png', 'images/flowersSet2/3.png', 'images/flowersSet2/4.png']
+const set1 = ['../images/flowersSet1/1.png', '../images/flowersSet1/2.png', '../images/flowersSet1/3.png', '../images/flowersSet1/4.png']
+const set2 = ['../images/flowersSet2/1.png', '../images/flowersSet2/2.png', '../images/flowersSet2/3.png', '../images/flowersSet2/4.png']
 const test_deck_images = [set1, set2];
 
-const jsPsych = initJsPsych();
+
 const test_deck_images_shuffle = jsPsych.randomization.sampleWithoutReplacement(test_deck_images, blocks+1)
 
 function images_for_block_start() {
@@ -29,7 +31,7 @@ const startBlock = {
             <img src=${images_for_block_start()[0]}> <img src="${images_for_block_start()[1]}">    <img src="${images_for_block_start()[2]}
             ">    <img src="${images_for_block_start()[3]}">  `
     },
-    // choices: [32], //TODO!!!
+    choices: [' '], //space
     post_trial_gap: 1000
 }
 
@@ -57,7 +59,7 @@ const finishBlock = {
 
     },
     post_trial_gap: 1000,
-    choices: [32],
+    choices: [' '],
     on_finish: function () {
         block += 1;
         //current_cards_exp_trial = 0;
@@ -65,11 +67,17 @@ const finishBlock = {
 }
 
 
+
 function test() {
+   
+    const test_procedure_cards = {
+        timeline: [fixation_cards, exp_cards, exp_choice, exp_delay, exp_reward],
+        repetitions: 1 // 25 trials
+    }
 
     return {
-        timeline: [startBlock, finishBlock],
-        repetitions: 1
+        timeline: [startBlock, test_procedure_cards, finishBlock],
+        repetitions: 2 // 2 blocks
     };
 }
 
