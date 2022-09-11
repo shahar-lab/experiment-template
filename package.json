@@ -34,6 +34,7 @@
     "css-loader": "^6.7.1",
     "declaration-bundler-webpack-plugin": "^1.0.3",
     "eslint": "^8.20.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.7.1",
     "sass": "^1.54.0",
