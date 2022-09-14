@@ -5,14 +5,14 @@ export class Data {
     key_selected: number;
     delay: number;
     delay_prob: number;
-    flower_set: number | string; // TODO
+    flower_set: number | string; // TODO - what is flower_set?
     int_trial_number: number;
     internal_node_id: string;
     iti_delay: number;
     left_image: string;
     phase: "exp" | "practice";
     prob_chosen: number;
-    prob_flower1: number;
+    prob_flower1: number; // TODO: Why is this not an array of 4 numbers?
     prob_flower2: number;
     prob_flower3: number;
     prob_flower4: number;
