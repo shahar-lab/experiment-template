@@ -8,7 +8,7 @@ function test() {
     const test_procedure_cards = {
         timeline: [fixation_cards, exp_cards, exp_choice, exp_delay, exp_reward],
         repetitions: 2 // TODO: 25 trials
-    }
+    };
 
     return {
         timeline: [startBlock, test_procedure_cards, finishBlock],

@@ -1,5 +1,5 @@
 import {initJsPsych} from 'jspsych';
-import 'jspsych/css/jspsych.css'
+import 'jspsych/css/jspsych.css';
 
 const jsPsych = initJsPsych();
 
