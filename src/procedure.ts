@@ -291,7 +291,6 @@ let block = 0; // current block
 let current_cards_practice_trial = 0;
 let current_cards_exp_trial = 0;
 
-// TODO- add types, maybe class
 
 let card_selected: number | undefined;
 let card_unselected: number;
@@ -519,7 +518,7 @@ function practice_show_reward(current_trial_num: number) {
 /////////// test /////////////
 export const startBlock = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
+  stimulus: () => {
     return `<p><b><u>Test block ${block + 1} out of ${
       blocks + 1
     }</u></b></p>                     
@@ -545,7 +544,7 @@ export const fixation_cards = {
 
 export const exp_cards = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
+  stimulus: () => {
     return draw_show_cards(images_for_block_start());
   },
   choices: ["s", "k"],
@@ -554,10 +553,10 @@ export const exp_cards = {
   data: {
     phase: "exp",
     trial_name: "cards1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_exp_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
@@ -571,10 +570,10 @@ export const exp_choice = {
   data: {
     phase: "exp",
     trial_name: "choice1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_exp_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
@@ -596,7 +595,7 @@ export const exp_delay = {
   type: htmlKeyboardResponse,
   stimulus: showHourglass,
   choices: "NO_KEYS",
-  trial_duration: function () {
+  trial_duration: () => {
     return show_delay(current_cards_exp_trial);
   },
   post_trial_gap: 0,
@@ -604,10 +603,10 @@ export const exp_delay = {
   data: {
     phase: "exp",
     trial_name: "exp_delay",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_exp_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
@@ -615,7 +614,7 @@ export const exp_delay = {
 
 export const exp_reward = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
+  stimulus: () => {
     return show_reward(current_cards_exp_trial);
   },
   choices: [" "],
@@ -623,16 +622,16 @@ export const exp_reward = {
   data: {
     phase: "exp",
     trial_name: "reward1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_exp_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
     iti_delay: 0,
   },
 
-  on_finish: function (data: Data) {
+  on_finish: (data: Data) => {
     data.reward = reward;
     data.delay_prob = delay_prob;
     data.random_duration = random_duration;
@@ -654,7 +653,7 @@ export const exp_reward = {
 
 export const finishBlock = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
+  stimulus: () => {
     let number_of_coins = "";
     let finish_block_string = `<p>Good job!</p> <p style="text-align: left"><br> Test block ${
       block + 1
@@ -678,7 +677,7 @@ export const finishBlock = {
   },
   post_trial_gap: 1000,
   choices: [" "],
-  on_finish: function () {
+  on_finish: () => {
     block += 1;
 
     console.log(`block ${block} finished.`);
@@ -690,8 +689,7 @@ export const finishBlock = {
 
 export const practice_cards = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
-    // TODO: Change all function() { } annonymous functions to () => { ... }
+  stimulus: () => {
     return draw_show_cards(practice_deck_images);
   },
   choices: ["s", "k"],
@@ -699,10 +697,10 @@ export const practice_cards = {
   data: {
     phase: "practice",
     trial_name: "cards1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_practice_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
@@ -716,14 +714,14 @@ export const practice_choice = {
   data: {
     phase: "practice",
     trial_name: "choice1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_practice_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
-  on_finish: function (data: Data) {
+  on_finish: (data: Data) => {
     data.key_selected = selected;
     if (selected == 0) {
       data.card_selected = practice_deck_images.indexOf(left_card) + 1;
@@ -739,7 +737,7 @@ export const practice_delay = {
   type: htmlKeyboardResponse,
   stimulus: showHourglass,
   choices: "NO_KEYS",
-  trial_duration: function () {
+  trial_duration: () => {
     return practice_show_delay(current_cards_practice_trial);
   },
   post_trial_gap: 0,
@@ -747,10 +745,10 @@ export const practice_delay = {
   data: {
     phase: "practice",
     trial_name: "practice_delay",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_practice_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
   },
@@ -758,7 +756,7 @@ export const practice_delay = {
 
 export const practice_reward = {
   type: htmlKeyboardResponse,
-  stimulus: function () {
+  stimulus: () => {
     return practice_show_reward(current_cards_practice_trial);
   },
   choices: "NO_KEYS",
@@ -766,15 +764,15 @@ export const practice_reward = {
   data: {
     phase: "practice",
     trial_name: "reward1",
-    trial_num: function () {
+    trial_num: () => {
       return current_cards_practice_trial;
     },
-    block: function () {
+    block: () => {
       return block;
     },
     iti_delay: 0,
   },
-  on_finish: function (data: Data) {
+  on_finish: (data: Data) => {
     // TODO: Seems the same as exp_reward.on_finish  this should probably be moved to an external function
     data.reward = reward;
     data.delay_prob = delay_prob;
