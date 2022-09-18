@@ -48,6 +48,7 @@
     "wepack-cli": "^0.0.1-security"
   },
   "dependencies": {
+    "@jspsych/plugin-fullscreen": "^1.1.1",
     "@jspsych/plugin-html-keyboard-response": "^1.1.1",
     "jspsych": "^7.3.0"
   }

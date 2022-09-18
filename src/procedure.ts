@@ -391,6 +391,9 @@ function show_reward(current_trial_num: number) {
       .filter({ phase: "exp", trial_name: "choice1" })
       .last(1)
       .select("card_selected").values[0];
+
+    //prob_chosen = flowerProbabilities(current_trial_num)[card_selected];
+    //prob_unchosen = flowerProbabilities(current_trial_num)[card_unselected];
     prob_chosen = FB_matrix[card_selected][current_trial_num];
     prob_unchosen = FB_matrix[card_unselected][current_trial_num];
     prob_unreward = 1 - prob_chosen;
