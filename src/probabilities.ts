@@ -14,8 +14,5 @@ class ConstantTrialProbability implements TrialProbability {
     }
 }
 
-flowerProbabilities = new ConstantTrialProbability([0.35, 0.45, 0.55, 0.65]);
-delayProbabilities = new ConstantTrialProbability([1, 1, 1, 1]);
 
-
-flowerProbabilities.getTrialProbability(trialNum)
+export default ConstantTrialProbability;

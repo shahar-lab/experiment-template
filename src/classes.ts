@@ -5,7 +5,7 @@ export class Data {
     key_selected: number;
     delay: number;
     delay_prob: number;
-    flower_set: number | string; // TODO - what is flower_set?
+    flower_set: number;
     int_trial_number: number;
     internal_node_id: string;
     iti_delay: number;
