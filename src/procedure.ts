@@ -96,15 +96,15 @@ function linspace(start: number, stop: number, num: number, endpoint = true) {
   return Array.from({ length: num }, (_, i) => start + step * i);
 }
 
-function show_delay(current_trial_num: number) {
+function show_delay(current_trial_num: number, phase: "practice" | "exp") {
   card_selected = jsPsych.data
     .get()
-    .filter({ phase: "exp", trial_name: "choice1" })
+    .filter({ phase: phase, trial_name: "choice1" })
     .last(1)
     .select("card_selected").values[0];
   card_unselected = jsPsych.data
     .get()
-    .filter({ phase: "exp", trial_name: "choice1" })
+    .filter({ phase: phase, trial_name: "choice1" })
     .last(1)
     .select("card_unselected").values[0];
 
@@ -115,8 +115,12 @@ function show_delay(current_trial_num: number) {
     delay_prob = delayProbabilities.getTrialProbability(current_trial_num)[card_selected];
   }
 
+  let startParam = 0.5; // in exp phase
+  if (phase === "practice") {
+    startParam = 0;
+  }
   random_duration = jsPsych.randomization.sampleWithReplacement(
-    linspace(0.5, 8, 40),
+    linspace(startParam, 8, 40),
     1
   )[0];
   delay_prob_random = delay_prob * random_duration * 1000; //converte to ms
@@ -125,63 +129,6 @@ function show_delay(current_trial_num: number) {
 
 function showHourglass() {
   return `<img class='card_left_reward' src='${hourglass}'>`;
-}
-
-function show_reward(current_trial_num: number) {
-  card_selected = jsPsych.data
-    .get()
-    .filter({ phase: "exp", trial_name: "choice1" })
-    .last(1)
-    .select("card_selected").values[0];
-  card_unselected = jsPsych.data
-    .get()
-    .filter({ phase: "exp", trial_name: "choice1" })
-    .last(1)
-    .select("card_unselected").values[0];
-  key_selected = jsPsych.data
-    .get()
-    .filter({ phase: "exp", trial_name: "choice1" })
-    .last(1)
-    .select("key_selected").values[0];
-  if (key_selected == 0) {
-    card_to_show = `<img class='card_left_reward' src='${left_card}'>`;
-    card_selected = jsPsych.data
-      .get()
-      .filter({ phase: "exp", trial_name: "choice1" })
-      .last(1)
-      .select("card_selected").values[0];
-
-    prob_chosen = flowerProbabilities.getTrialProbability(current_trial_num)[card_selected];
-    prob_unchosen = flowerProbabilities.getTrialProbability(current_trial_num)[card_unselected];
-    // prob_chosen = FB_matrix[card_selected][current_trial_num];
-    // prob_unchosen = FB_matrix[card_unselected][current_trial_num];
-    prob_unreward = 1 - prob_chosen;
-    reward = jsPsych.randomization.sampleWithReplacement([0, 1], 1, [
-      prob_unreward,
-      prob_chosen,
-    ])[0];
-    reward_to_show = `<img class=reward src='${reward_images[reward]}'>`;
-  } else if (key_selected == 1) {
-    card_to_show = `<img class='card_right_reward' src='${right_card}'>`;
-    card_selected = jsPsych.data
-      .get()
-      .filter({ phase: "exp", trial_name: "choice1" })
-      .last(1)
-      .select("card_selected").values[0];    
-    prob_chosen = flowerProbabilities.getTrialProbability(current_trial_num)[card_selected];
-    prob_unchosen = flowerProbabilities.getTrialProbability(current_trial_num)[card_unselected];
-    prob_unreward = 1 - prob_chosen;
-    reward = jsPsych.randomization.sampleWithReplacement([0, 1], 1, [
-      prob_unreward,
-      prob_chosen,
-    ])[0];
-    reward_to_show = `<img class=reward src='${reward_images[reward]}'>`;
-  } else {
-    prob_chosen = undefined;
-    prob_unchosen = undefined;
-    return '<div style="font-size:40px;">Please respond faster!</div>';
-  }
-  return card_to_show + reward_to_show;
 }
 
 function draw_show_cards(deck: string[]) {
@@ -194,56 +141,28 @@ function draw_show_cards(deck: string[]) {
   return left_with_tag + right_with_tag + fixation;
 }
 
-//------------------------- practice functions-----
 
-function practice_show_delay(current_trial_num: number) {
+function show_reward(current_trial_num: number, phase: "exp" | "practice") {
   card_selected = jsPsych.data
     .get()
-    .filter({ phase: "practice", trial_name: "choice1" })
+    .filter({ phase: phase, trial_name: "choice1" })
     .last(1)
     .select("card_selected").values[0];
   card_unselected = jsPsych.data
     .get()
-    .filter({ phase: "practice", trial_name: "choice1" })
-    .last(1)
-    .select("card_unselected").values[0];
-
-  if (card_selected == undefined) {
-    delay_prob = 0;
-  } else {
-    // delay_prob = delay_prob_matrix[card_selected][current_trial_num];
-    delay_prob = delayProbabilities.getTrialProbability(current_trial_num)[card_selected];
-  }
-
-  random_duration = jsPsych.randomization.sampleWithReplacement(
-    linspace(0, 8, 40),
-    1
-  )[0];
-  delay_prob_random = delay_prob * random_duration * 1000; //converte to ms
-  return delay_prob_random;
-}
-
-function practice_show_reward(current_trial_num: number) {
-  card_selected = jsPsych.data
-    .get()
-    .filter({ phase: "practice", trial_name: "choice1" })
-    .last(1)
-    .select("card_selected").values[0];
-  card_unselected = jsPsych.data
-    .get()
-    .filter({ phase: "practice", trial_name: "choice1" })
+    .filter({ phase: phase, trial_name: "choice1" })
     .last(1)
     .select("card_unselected").values[0];
   key_selected = jsPsych.data
     .get()
-    .filter({ phase: "practice", trial_name: "choice1" })
+    .filter({ phase: phase, trial_name: "choice1" })
     .last(1)
     .select("key_selected").values[0];
   if (key_selected == 0) {
     card_to_show = `<img class='card_left_reward' src='${left_card}'>`;
     card_selected = jsPsych.data
       .get()
-      .filter({ phase: "practice", trial_name: "choice1" })
+      .filter({ phase: phase, trial_name: "choice1" })
       .last(1)
       .select("card_selected").values[0];
       
@@ -259,7 +178,7 @@ function practice_show_reward(current_trial_num: number) {
     card_to_show = `<img class='card_right_reward' src='${right_card}'>`;
     card_selected = jsPsych.data
       .get()
-      .filter({ phase: "practice", trial_name: "choice1" })
+      .filter({ phase: phase, trial_name: "choice1" })
       .last(1)
       .select("card_selected").values[0];
     prob_chosen = flowerProbabilities.getTrialProbability(current_trial_num)[card_selected];
@@ -361,7 +280,7 @@ export const exp_delay = {
   stimulus: showHourglass,
   choices: "NO_KEYS",
   trial_duration: () => {
-    return show_delay(current_cards_exp_trial);
+    return show_delay(current_cards_exp_trial, "exp");
   },
   post_trial_gap: 0,
   css_classes: ["stimulus"],
@@ -380,7 +299,7 @@ export const exp_delay = {
 export const exp_reward = {
   type: htmlKeyboardResponse,
   stimulus: () => {
-    return show_reward(current_cards_exp_trial);
+    return show_reward(current_cards_exp_trial, "exp");
   },
   choices: [" "],
   trial_duration: 2000,
@@ -406,6 +325,7 @@ export const exp_reward = {
     data.int_trial_number = current_cards_practice_trial;
 
     data.prob_flower = [
+      // TODO: why practice trial and not exp trial? mistake?
       flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1],
       flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2],
       flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3],
@@ -508,7 +428,7 @@ export const practice_delay = {
   stimulus: showHourglass,
   choices: "NO_KEYS",
   trial_duration: () => {
-    return practice_show_delay(current_cards_practice_trial);
+    return show_delay(current_cards_practice_trial, "practice");
   },
   post_trial_gap: 0,
   css_classes: ["stimulus"],
@@ -527,7 +447,7 @@ export const practice_delay = {
 export const practice_reward = {
   type: htmlKeyboardResponse,
   stimulus: () => {
-    return practice_show_reward(current_cards_practice_trial);
+    return show_reward(current_cards_practice_trial, "practice");
   },
   choices: "NO_KEYS",
   trial_duration: 2000,

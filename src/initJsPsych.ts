@@ -8,7 +8,7 @@ const jsPsych = initJsPsych({
 
         const urlParams = new URLSearchParams(window.location.search);
         const createCsv = urlParams.get('csv');
-        if (createCsv) {
+        if (createCsv && createCsv !== "false") {
             data.localSave('csv','flowers.csv');
         }
 
