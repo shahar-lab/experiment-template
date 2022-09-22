@@ -12,10 +12,7 @@ export class Data {
     left_image: string;
     phase: "exp" | "practice";
     prob_chosen: number;
-    prob_flower1: number; // TODO: Why is this not an array of 4 numbers?
-    prob_flower2: number;
-    prob_flower3: number;
-    prob_flower4: number;
+    prob_flower: number[]; // this is an array of 4 numbers
     prob_unchosen: number;
     random_duration: number;
     response: string | undefined;

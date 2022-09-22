@@ -397,7 +397,6 @@ export const exp_reward = {
   },
 
   on_finish: (data: Data) => {
-    console.log(images_for_block_start())
     data.reward = reward;
     data.delay_prob = delay_prob;
     data.random_duration = random_duration;
@@ -406,10 +405,12 @@ export const exp_reward = {
     data.prob_unchosen = prob_unchosen;
     data.int_trial_number = current_cards_practice_trial;
 
-    data.prob_flower1 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1];
-    data.prob_flower2 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2];
-    data.prob_flower3 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3];
-    data.prob_flower4 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4];
+    data.prob_flower = [
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4]
+    ];
 
     data.left_image = left_card[21];
     data.right_image = right_card[21];
@@ -550,10 +551,12 @@ export const practice_reward = {
     data.prob_chosen = prob_chosen;
     data.prob_unchosen = prob_unchosen;
     data.int_trial_number = current_cards_practice_trial;
-    data.prob_flower1 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1];
-    data.prob_flower2 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2];
-    data.prob_flower3 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3];
-    data.prob_flower4 = flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4];
+    data.prob_flower = [
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3],
+      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4]
+    ];
 
     data.left_image = left_card[29];
     data.right_image = right_card[29];
