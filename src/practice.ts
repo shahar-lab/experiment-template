@@ -1,7 +1,8 @@
 import 'jspsych/css/jspsych.css';
 import htmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 
-import { fixation_cards, practice_cards, practice_choice, practice_delay, practice_reward } from './procedure';
+import { cards, choice, delay, fixation_cards, getState, rewardState } from './procedure';
+
 
  const startPractice = {
     type: htmlKeyboardResponse,
@@ -22,8 +23,10 @@ const practiceCompleted = {
 
 
 function practice() {
+    const practiceElement = getState("practice");
+
     const demo_procedure_only_cards = {
-        timeline: [fixation_cards, practice_cards, practice_choice, practice_delay, practice_reward],
+        timeline: [fixation_cards, cards(practiceElement), choice(practiceElement), delay(practiceElement), rewardState(practiceElement)],
         repetitions: 2 // TODO: 6 
     };
 

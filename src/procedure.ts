@@ -50,9 +50,8 @@ const delayProbabilities = new ConstantTrialProbability([1, 1, 1, 1]);
 const blocks = 1; // 2 blocks in the test
 let block = 0; // current block
 
-let current_cards_practice_trial = 0;
-let current_cards_exp_trial = 0;
-
+const current_cards_practice_trial = 0;
+const current_cards_exp_trial = 0;
 
 let card_selected: number | undefined;
 let card_unselected: number;
@@ -198,7 +197,6 @@ function show_reward(current_trial_num: number, phase: "exp" | "practice") {
   return card_to_show + reward_to_show;
 }
 
-// TODO: maybe split to few files?
 /////////// test /////////////
 export const startBlock = {
   type: htmlKeyboardResponse,
@@ -217,128 +215,6 @@ export const startBlock = {
   },
   choices: [" "], //space
   post_trial_gap: 1000,
-};
-
-export const fixation_cards = {
-  type: htmlKeyboardResponse,
-  stimulus: fixation,
-  choices: "NO_KEYS",
-  trial_duration: 1000,
-};
-
-export const exp_cards = {
-  type: htmlKeyboardResponse,
-  stimulus: () => {
-    return draw_show_cards(images_for_block_start());
-  },
-  choices: ["s", "k"],
-  trial_duration: 6000,
-  response_ends_trial: true,
-  data: {
-    phase: "exp",
-    trial_name: "cards1",
-    trial_num: () => {
-      return current_cards_exp_trial;
-    },
-    block: () => {
-      return block;
-    },
-  },
-};
-
-export const exp_choice = {
-  type: htmlKeyboardResponse,
-  stimulus: show_choice,
-  choices: "NO_KEYS",
-  trial_duration: 500,
-  data: {
-    phase: "exp",
-    trial_name: "choice1",
-    trial_num: () => {
-      return current_cards_exp_trial;
-    },
-    block: () => {
-      return block;
-    },
-  },
-  on_finish: (data: Data) => {
-    data.key_selected = selected;
-    if (selected == 0) {
-      data.card_selected = images_for_block_start().indexOf(left_card) + 1;
-      data.card_unselected = images_for_block_start().indexOf(right_card) + 1;
-    } else if (selected == 1) {
-      data.card_selected = images_for_block_start().indexOf(right_card) + 1;
-      data.card_unselected = images_for_block_start().indexOf(left_card) + 1;
-    }
-
-    // return data;
-  },
-};
-
-export const exp_delay = {
-  type: htmlKeyboardResponse,
-  stimulus: showHourglass,
-  choices: "NO_KEYS",
-  trial_duration: () => {
-    return show_delay(current_cards_exp_trial, "exp");
-  },
-  post_trial_gap: 0,
-  css_classes: ["stimulus"],
-  data: {
-    phase: "exp",
-    trial_name: "exp_delay",
-    trial_num: () => {
-      return current_cards_exp_trial;
-    },
-    block: () => {
-      return block;
-    },
-  },
-};
-
-export const exp_reward = {
-  type: htmlKeyboardResponse,
-  stimulus: () => {
-    return show_reward(current_cards_exp_trial, "exp");
-  },
-  choices: [" "],
-  trial_duration: 2000,
-  data: {
-    phase: "exp",
-    trial_name: "reward1",
-    trial_num: () => {
-      return current_cards_exp_trial;
-    },
-    block: () => {
-      return block;
-    },
-    iti_delay: 0,
-  },
-
-  on_finish: (data: Data) => {
-    data.reward = reward;
-    data.delay_prob = delay_prob;
-    data.random_duration = random_duration;
-    data.delay = delay_prob_random;
-    data.prob_chosen = prob_chosen;
-    data.prob_unchosen = prob_unchosen;
-    data.int_trial_number = current_cards_practice_trial;
-
-    data.prob_flower = [
-      // TODO: why practice trial and not exp trial? mistake?
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4]
-    ];
-
-    data.left_image = left_card[21];
-    data.right_image = right_card[21];
-    const setIndex = images_for_block_start()[0].indexOf('set');
-    const flowerIndex = images_for_block_start()[0].indexOf('flower');
-    data.flower_set = Number(images_for_block_start()[0].substring(setIndex+3, flowerIndex));
-    current_cards_exp_trial += 1;
-  },
 };
 
 export const finishBlock = {
@@ -375,114 +251,156 @@ export const finishBlock = {
   },
 };
 
-////////// practice /////////////
+////////// BOTH: practice and exp states, general stages in the procedure /////////////
 
-export const practice_cards = {
+class State {
+  phase: "practice" | "exp";
+  images: any[];
+  current_cards_trial: number;
+
+  constructor(phase: "practice" | "exp", images: any[], current_cards: number) {
+    this.phase = phase;
+    this.images = images;
+    this.current_cards_trial = current_cards;
+  }
+}
+const practiceElement = new State("practice", practice_deck_images, current_cards_practice_trial);
+const expElement = new State("exp", images_for_block_start(), current_cards_exp_trial);
+
+
+export function getState(phase: "practice" | "exp") {
+  if (phase === "practice") {
+    return practiceElement;
+  }
+  return expElement;
+}
+
+export const fixation_cards = {
   type: htmlKeyboardResponse,
-  stimulus: () => {
-    return draw_show_cards(practice_deck_images);
-  },
-  choices: ["s", "k"],
-  trial_duration: 6000,
-  data: {
-    phase: "practice",
-    trial_name: "cards1",
-    trial_num: () => {
-      return current_cards_practice_trial;
-    },
-    block: () => {
-      return block;
-    },
-  },
+  stimulus: fixation,
+  choices: "NO_KEYS",
+  trial_duration: 1000,
 };
 
-export const practice_choice = {
-  type: htmlKeyboardResponse,
-  stimulus: show_choice,
-  choices: "NO_KEYS",
-  trial_duration: 500,
-  data: {
-    phase: "practice",
-    trial_name: "choice1",
-    trial_num: () => {
-      return current_cards_practice_trial;
+export function cards(state: State) {
+  return {
+    type: htmlKeyboardResponse,
+    stimulus: () => {
+      return draw_show_cards(state.images);
     },
-    block: () => {
-      return block;
+    choices: ["s", "k"],
+    trial_duration: 6000,
+    data: {
+      phase: state.phase,
+      trial_name: "cards1",
+      trial_num: () => {
+        return state.current_cards_trial;
+      },
+      block: () => {
+        return block;
+      },
     },
-  },
-  on_finish: (data: Data) => {
-    data.key_selected = selected;
-    if (selected == 0) {
-      data.card_selected = practice_deck_images.indexOf(left_card) + 1;
-      data.card_unselected = practice_deck_images.indexOf(right_card) + 1;
-    } else if (selected == 1) {
-      data.card_selected = practice_deck_images.indexOf(right_card) + 1;
-      data.card_unselected = practice_deck_images.indexOf(left_card) + 1;
+  };
+}
+
+export function choice(state: State) {
+  return {
+    type: htmlKeyboardResponse,
+    stimulus: show_choice,
+    choices: "NO_KEYS",
+    trial_duration: 500,
+    data: {
+      phase: state.phase,
+      trial_name: "choice1",
+      trial_num: () => {
+        return state.current_cards_trial;
+      },
+      block: () => {
+        return block;
+      },
+    },
+    on_finish: (data: Data) => {
+      data.key_selected = selected;
+      if (selected == 0) {
+        data.card_selected = state.images.indexOf(left_card) + 1;
+        data.card_unselected = state.images.indexOf(right_card) + 1;
+      } else if (selected == 1) {
+        data.card_selected = state.images.indexOf(right_card) + 1;
+        data.card_unselected = state.images.indexOf(left_card) + 1;
+      }
+    },
+  };
+}
+
+export function delay(state: State) {
+  return {
+    type: htmlKeyboardResponse,
+    stimulus: showHourglass,
+    choices: "NO_KEYS",
+    trial_duration: () => {
+      return show_delay(state.current_cards_trial, state.phase);
+    },
+    post_trial_gap: 0,
+    css_classes: ["stimulus"],
+    data: {
+      phase: state.phase,
+      trial_name: `${state.phase}_delay`,
+      trial_num: () => {
+        return state.current_cards_trial;
+      },
+      block: () => {
+        return block;
+      },
     }
-  },
-};
+  };
+}
 
-export const practice_delay = {
-  type: htmlKeyboardResponse,
-  stimulus: showHourglass,
-  choices: "NO_KEYS",
-  trial_duration: () => {
-    return show_delay(current_cards_practice_trial, "practice");
-  },
-  post_trial_gap: 0,
-  css_classes: ["stimulus"],
-  data: {
-    phase: "practice",
-    trial_name: "practice_delay",
-    trial_num: () => {
-      return current_cards_practice_trial;
+export function rewardState(state: State) {
+  return {
+    type: htmlKeyboardResponse,
+    stimulus: () => {
+      return show_reward(state.current_cards_trial, state.phase);
     },
-    block: () => {
-      return block;
+    choices: state.phase === "exp" ? [" "] : "NO_KEYS",
+    trial_duration: 2000,
+    data: {
+      phase: state.phase,
+      trial_name: "reward1",
+      trial_num: () => {
+        return state.current_cards_trial;
+      },
+      block: () => {
+        return block;
+      },
+      iti_delay: 0,
     },
-  },
-};
-
-export const practice_reward = {
-  type: htmlKeyboardResponse,
-  stimulus: () => {
-    return show_reward(current_cards_practice_trial, "practice");
-  },
-  choices: "NO_KEYS",
-  trial_duration: 2000,
-  data: {
-    phase: "practice",
-    trial_name: "reward1",
-    trial_num: () => {
-      return current_cards_practice_trial;
+  
+    on_finish: (data: Data) => {
+      data.reward = reward;
+      data.delay_prob = delay_prob;
+      data.random_duration = random_duration;
+      data.delay = delay_prob_random;
+      data.prob_chosen = prob_chosen;
+      data.prob_unchosen = prob_unchosen;
+      data.int_trial_number = state.current_cards_trial;
+  
+      data.prob_flower = [
+        flowerProbabilities.getTrialProbability(state.current_cards_trial)[1],
+        flowerProbabilities.getTrialProbability(state.current_cards_trial)[2],
+        flowerProbabilities.getTrialProbability(state.current_cards_trial)[3],
+        flowerProbabilities.getTrialProbability(state.current_cards_trial)[4]
+      ];
+  
+      let index = 21; // exp phase
+      if (state.phase === "practice") {
+        index = 29;
+      }
+      data.left_image = left_card[index];
+      data.right_image = right_card[index];
+      const setIndex = images_for_block_start()[0].indexOf('set');
+      const flowerIndex = images_for_block_start()[0].indexOf('flower');
+      data.flower_set = Number(images_for_block_start()[0].substring(setIndex+3, flowerIndex));
+      state.current_cards_trial += 1;
     },
-    block: () => {
-      return block;
-    },
-    iti_delay: 0,
-  },
-  on_finish: (data: Data) => {
-    // TODO: Seems the same as exp_reward.on_finish  this should probably be moved to an external function
-    data.reward = reward;
-    data.delay_prob = delay_prob;
-    data.random_duration = random_duration;
-    data.delay = delay_prob_random;
-    data.prob_chosen = prob_chosen;
-    data.prob_unchosen = prob_unchosen;
-    data.int_trial_number = current_cards_practice_trial;
-    data.prob_flower = [
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[1],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[2],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[3],
-      flowerProbabilities.getTrialProbability(current_cards_practice_trial)[4]
-    ];
-
-    data.left_image = left_card[29];
-    data.right_image = right_card[29];
-    const setIndex = images_for_block_start()[0].indexOf('set');
-    const flowerIndex = images_for_block_start()[0].indexOf('flower');
-    data.flower_set = Number(images_for_block_start()[0].substring(setIndex+3, flowerIndex));
-    current_cards_practice_trial += 1;
-  },
-};
+  };
+}

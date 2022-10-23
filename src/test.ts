@@ -1,12 +1,13 @@
 import 'jspsych/css/jspsych.css';
 
-import { startBlock, fixation_cards, exp_cards, exp_choice, exp_delay, exp_reward, finishBlock } from './procedure';
+import { startBlock, fixation_cards, finishBlock, getState, cards, choice, delay, rewardState } from './procedure';
 
 
 function test() {
+    const practiceElement = getState("exp");
    
     const test_procedure_cards = {
-        timeline: [fixation_cards, exp_cards, exp_choice, exp_delay, exp_reward],
+        timeline: [fixation_cards, cards(practiceElement), choice(practiceElement), delay(practiceElement), rewardState(practiceElement)],
         repetitions: 2 // TODO: 25 trials
     };
 
