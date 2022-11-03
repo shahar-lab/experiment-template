@@ -1,9 +1,6 @@
-
 name: Deploy
 on:
   push:
-    tags:
-      - api-v*
     branches:
       - main
 
@@ -19,9 +16,9 @@ jobs:
 
       - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          npm install
+          CI=false yarn build
           npm run build
-
+         
       - name: Deploy to github 🚀
         uses: shahar-lab/experiment-template@v1
         with:
