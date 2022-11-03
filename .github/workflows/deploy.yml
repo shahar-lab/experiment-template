@@ -20,7 +20,7 @@ jobs:
           npm run build
          
       - name: Deploy to github 🚀
-        uses: shahar-lab/experiment-template@v1
+        uses: shahar-lab/experiment-template@main
         with:
           folder: dist
           clean: true
