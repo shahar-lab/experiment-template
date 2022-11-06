@@ -19,8 +19,8 @@ jobs:
           CI=false yarn build
           npm run build
          
-      - name: Deploy to github 🚀
-        uses: shahar-lab/experiment-template@main
+      - name: Deploy 🚀
+        uses: shahar-lab/experiment-template@v4
         with:
           folder: dist
           clean: true
