@@ -18,7 +18,6 @@ jobs:
         run: |
           yarn install
           CI=false yarn build
-          npm run build
          
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
