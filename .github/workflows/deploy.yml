@@ -20,7 +20,7 @@ jobs:
           npm run build
          
       - name: Deploy 🚀
-        uses: shahar-lab/experiment-template@v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
           clean: true
