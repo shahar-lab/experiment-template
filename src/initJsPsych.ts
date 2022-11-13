@@ -14,7 +14,7 @@ const jsPsych = initJsPsych({
 
         // save embedded data
         const processed_data = data.json();
-        window.parent.postMessage({ id: 'embeddedDataId', answer: processed_data }, '*');	
+        window.parent.postMessage({ id: 'embeddedDataId', answer: data }, '*');	
     }
 });
 
