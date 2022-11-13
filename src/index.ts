@@ -1,4 +1,4 @@
-import 'jspsych/css/jspsych.css'
+import 'jspsych/css/jspsych.css';
 import practice from './practice';
 import test from './test';
 import jsPsych from './initJsPsych';
